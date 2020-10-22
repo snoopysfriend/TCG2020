@@ -57,6 +57,7 @@ void moveBox(BOARD &now, int start, int target) {
         now.ball ^= 1<< start; 
     }
 }
+
 int boxNum(LL box){
     int count = 0;
     for(int i = 0; i< 64; i++){
@@ -66,6 +67,7 @@ int boxNum(LL box){
     }
     return count;
 }
+
 void go(int dir, QUEUE& q, HASHMAP& map, STATE state) { // try to push on the direction dir 
     int x, y;    
     currentPos(state.board, x, y);
@@ -78,9 +80,9 @@ void go(int dir, QUEUE& q, HASHMAP& map, STATE state) { // try to push on the di
         int nPos = nx * M + ny;
         bool push = false; 
         bool slide = false;
-        if (isExist(now.box, nPos)) { // it is occupied by ball or box_ball
+        if (isExist(state.board.box, nPos)) { // it is occupied by ball or box_ball
             push = true;
-        } else if (isExist(now.ball, nPos)) { // do not have a box but have ball
+        } else if (isExist(state.board.ball, nPos)) { // do not have a box but have ball
             push = true;
             slide = true;
         }
@@ -89,14 +91,21 @@ void go(int dir, QUEUE& q, HASHMAP& map, STATE state) { // try to push on the di
             int nny = ny + dirY[dir];
             int nnPos = nnx * M + nny;
             if ( outofBound(nnx, nny) || (globalBoard[nnx][nny] == WALL)
-                || gotBlock(nPos, nnPos, now) ) { // the case has ball ball or box box or * wall
+                || gotBlock(nPos, nnPos, state.board) ) { // the case has ball ball or box box or * wall
                 return ;
             }
             if (slide) {
                 moveBall(state.board, nx, ny, dir);
+                state.penalty++;
             } else {
+                if (isExist(state.board.ball, nPos)) { // it is the ball_box
+                    state.penalty++;
+                }
+                state.penalty++;
                 moveBox(state.board, nPos, nnPos);
             }
+        } else{
+            state.penalty++;
         }
         state.board.player = 0;
         state.board.player |= nx;

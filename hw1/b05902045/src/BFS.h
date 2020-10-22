@@ -32,25 +32,29 @@ void BFS (GAMESTATE& GameState) {
     HASHMAP map;
 
     STATE init = GameState.state;
-    printf("player %d %d\n", init.board.player>>4, init.board.player&0xF);
-    printf("ball box %lld %lld\n", init.board.ball, init.board.box);
+    //printf("player %d %d\n", init.board.player>>4, init.board.player&0xF);
+    //printf("ball box %lld %lld\n", init.board.ball, init.board.box);
     q.push(init);
     map[init.board] = true;
 
     int count = 0;
     while (!q.empty()) {
-        STATE now = q.front();
+        //STATE now = q.front();
+        STATE now = q.top();
         q.pop();
         count++;
-        if(now.step > 25){
+        /*
+        if(now.step > 27){
             break;
         }
+        */
         if (!checkGoal(now)) {
             for (int i = 0; i < 4; i++) {
                 go(i, q, map, now);
             }
         } else {
             printf("step %d\n", now.step);
+            printf("penalty %d\n", now.penalty);
             outputAnswer(now);
             return ;
         }

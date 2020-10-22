@@ -87,6 +87,8 @@ namespace std {
 //typedef __int128 BOARD;
 typedef struct STATE{ // this is maintain in the queue 
     int step = 0;
+    int penalty = 0;
+    int heuristic = 0;
     char ans[500]; // if the ans is < 500 this should be set more carefully in the future
     BOARD board; 
 
@@ -100,6 +102,7 @@ typedef struct STATE{ // this is maintain in the queue
 
     STATE(const STATE &state){
         step = state.step;
+        penalty = state.penalty;
         for(int i = 0; i < state.step; i++) {
             ans[i] = state.ans[i];
         }
@@ -126,7 +129,9 @@ typedef struct STATE{ // this is maintain in the queue
         }   
         */
     }
-    
+    bool operator<(const STATE& r) const{ // because dequeue
+        return (penalty+heuristic) > (r.penalty+r.heuristic);
+    }
 } STATE;
 
 typedef struct GAMESTATE{ // this is for the whole search 
@@ -142,7 +147,8 @@ typedef struct GAMESTATE{ // this is for the whole search
 
 
 } GAMESTATE;
-typedef std::queue<STATE> QUEUE;
+//typedef std::queue<STATE> QUEUE;
+typedef std::priority_queue<STATE> QUEUE;
 typedef std::unordered_map<BOARD,bool> HASHMAP;
 
 
