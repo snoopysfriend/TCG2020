@@ -2,7 +2,8 @@
 // to solve the puzzle
 //
 //
-#include "BFS.h"
+//#include "BFS.h"
+#include "AStar.h"
 #include "string.h"
 /*
 void initBoard(STATE* state) { // init the bit map version of board 
@@ -22,8 +23,6 @@ void initBoard(STATE* state) { // init the bit map version of board
         }
     }
 }
-*/
-/*
 STATE* init() {
     STATE* state = new STATE;
     state->n = N;
@@ -42,5 +41,6 @@ void solvePuzzle() {
     //STATE* state =  init();  // init the state information of the board
     // call the searcher
     GAMESTATE init(globalBoard, N, M);
-    BFS(init);
+    AStar(init);
+    //BFS(init);
 }

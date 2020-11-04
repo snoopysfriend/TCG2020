@@ -28,23 +28,25 @@ typedef struct BOARD {
 
     BOARD(char Board[16][16], int n, int m) { // init the bit map version of board 
         int pos = 0;  
-        int q = 0;
+        ball = 0;
+        box = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
+                //pos = i * m + j;
                 switch (Board[i][j]){
                     case PLAYER:
                         player |= i;   
                         player |= j<<4;   
                         break;
                     case BALL:
-                        ball |= 1<<pos;
+                        ball |= 1LL<<pos;
                         break;
                     case BOX:
-                        box |= 1<<pos; 
+                        box |= 1LL<<pos; 
                         break;
                     case BALL_BOX:
-                        ball |= 1<<pos;
-                        box |= 1<<pos; 
+                        ball |= 1LL<<pos;
+                        box |= 1LL<<pos; 
                         break;
                     default:
                         break;
@@ -70,6 +72,24 @@ typedef struct BOARD {
     bool operator==(const BOARD& b) const{
         return (box == b.box && ball == b.ball && player == b.player);
     }
+
+    void showBoard() {
+        for(int i = 0; i < N; i++) {
+            for(int j = 0; j < M; j++){
+                int pos = i * M + j;     
+                if((ball>>pos) & 1 && (box>>pos) & 1) {
+                    printf("*");
+                } else if((ball>>pos) & 1) {
+                    printf("0");
+                } else if((box>>pos) & 1) {
+                    printf("$");
+                } else{
+                    printf("-");
+                }
+            }
+            printf("\n");
+        }
+    }
 } BOARD;
 namespace std {
     template <>
@@ -89,7 +109,10 @@ typedef struct STATE{ // this is maintain in the queue
     int step = 0;
     int penalty = 0;
     int heuristic = 0;
-    char ans[500]; // if the ans is < 500 this should be set more carefully in the future
+    char ans[100]; // if the ans is < 100 this should be set more carefully in the future
+    int backward;
+    bool ballRes = false;
+    bool boxRes = false;
     BOARD board; 
 
     STATE(){
@@ -103,6 +126,9 @@ typedef struct STATE{ // this is maintain in the queue
     STATE(const STATE &state){
         step = state.step;
         penalty = state.penalty;
+        heuristic = state.heuristic;
+        ballRes = state.ballRes;
+        boxRes = state.boxRes;
         for(int i = 0; i < state.step; i++) {
             ans[i] = state.ans[i];
         }
@@ -134,15 +160,29 @@ typedef struct STATE{ // this is maintain in the queue
     }
 } STATE;
 
+int countBoxNum(char Board[16][16], int nn, int mm) {
+    int count = 0;
+    for(int i = 0; i < nn; i++) {
+        for( int j = 0; j < mm; j++) {
+            if(Board[i][j] == BOX || Board[i][j] == BALL_BOX){
+                count++; 
+            }
+        }
+    }
+    return count;
+}
+
 typedef struct GAMESTATE{ // this is for the whole search 
     char boardState[16][16]; // n, m < 15
     STATE state;
     int n, m;
+    int boxNum = 0;
     //int box_num = 0;
     GAMESTATE(char Board[16][16], int nn, int mm){
         state = STATE(Board, nn, mm);
         n = nn;
         m = mm;
+        boxNum = countBoxNum(Board, nn, mm);
     }
 
 

@@ -10,6 +10,8 @@
 // by elsa
 #include "sokoboru.hpp"
 
+#define MAX_STEPS 1000
+
 // If the format of the input file (puzzle) is invalid, the program terminates.
 void Input_verifier(FILE *fin){
 #define INVALID_INPUT do{\
@@ -17,6 +19,7 @@ void Input_verifier(FILE *fin){
     exit(1);\
 }while(0)
     char s[MAX_LENGTH][MAX_WIDTH+2];
+    int count = 0;
     while(fgets(s[0], sizeof(s[0]), fin)){
         int len = strlen(s[0]);
         if(len>5 || s[0][len-1]!='\n'){
@@ -87,15 +90,14 @@ void Output_verifier(FILE *fin){
             if(!isdigit(line1[i]) || (len>1&&i==0&&line1[i]=='0')) INVALID_OUTPUT;
             n = 10*n+line1[i]-48;
         }
-        char *buf = new char [n+2];
-        if(!fgets(buf, n+2, fin)) INVALID_OUTPUT;
+        char buf[MAX_STEPS];
+        if(!fgets(buf, MAX_STEPS, fin)) INVALID_OUTPUT;
 
-        if((int)strlen(buf)!=n+1 || buf[n]!='\n') INVALID_OUTPUT;
-        
-        for(int i=0; i<=n-1; ++i){
+        if(buf[strlen(buf)-1]!='\n') INVALID_OUTPUT;
+
+        for(int i=0; i<(strlen(buf) - 1); ++i){
             if(!strchr("^v<>", buf[i])) INVALID_OUTPUT;
         }
-        free(buf);
     }
 }
 
@@ -126,7 +128,6 @@ int main(int argc, char **argv){
             return 1;
         }
         Input_verifier(fpi);
-        printf("%s is a valid input file\n", input);
     }
     if(output){
         fpo = fopen(output, "r");
@@ -135,7 +136,6 @@ int main(int argc, char **argv){
             return 1;
         }
         Output_verifier(fpo);
-        printf("%s is a valid output file\n", output);
     }
     std::ifstream infile;
     infile.open(input);
@@ -143,6 +143,7 @@ int main(int argc, char **argv){
         rewind(fpi);
         rewind(fpo);
         Board b;
+
         for(int stage=1; b.init_board(infile); ++stage){
             printf("Stage #%d: ", stage);
             int n;
@@ -150,13 +151,13 @@ int main(int argc, char **argv){
                 puts("Wrong Answer");
                 continue;
             }
-            char *sol = new char [n+2];
-            if(!fgets(sol, n+2, fpo)){
+            char sol[MAX_STEPS];
+            if(!fgets(sol, MAX_STEPS, fpo)){
                 // never happens
                 assert(0);
             }
             bool ac = true;
-            for(int i=0; i<=n-1; ++i){
+            for(int i=0; i<(strlen(sol)-1); ++i){
                 Direction dir = char_to_dir(sol[i]);
                 if ( !b.do_move(dir) ) {
                 	ac = false; break;
@@ -165,17 +166,18 @@ int main(int argc, char **argv){
             if ( !b.is_terminal() ) {
             	ac = false;
             }
+            if ( b.get_penalty() != n) {
+                ac = false;
+            }
 
             if(ac){
                 printf("Accepted: %d\n", n);
             }else puts("Wrong Answer");
-            free(sol);
         }
         char tail[2];
         if(fgets(tail, 2, fpo)){
             puts("Output Limit Exceeded");
         }
-        printf("%s and %s are valid\n", input, output);
     }
     if(fpi) fclose(fpi);
     if(fpo) fclose(fpo);

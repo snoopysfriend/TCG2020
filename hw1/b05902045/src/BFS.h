@@ -12,7 +12,7 @@ bool checkGoal(STATE st) {
 }
 */
 bool checkGoal(STATE st) {
-    if ((st.board.ball ^ st.board.box) == 0) {
+    if ((st.board.ball ^ st.board.box) == 0LL) {
         return true;
     } else {
         return false;
@@ -26,7 +26,40 @@ void outputAnswer(STATE& state) {
     }
     printf("\n");
 }
-
+int Count(LL num) {
+    int ans = 0;
+    for(int i = 0; i < 64; i++) {
+        if ((num>>i) & 1) {
+           
+           fprintf(stderr, "x: %d, y: %d ", i/M, i%M); 
+           ans++; 
+        }
+    }
+    return ans;
+}
+int checkCorrect(STATE init, STATE now) {
+    STATE tmp = init; 
+    for(int i = 0; i < now.step; i++) {
+        fprintf(stderr,"step %d \n", i);
+        switch (now.ans[i]){
+            case '>':
+                tmp = pureGo(0, tmp);
+                break;
+            case '<':
+                tmp = pureGo(1, tmp);
+                break;
+            case '^':
+                tmp = pureGo(2, tmp);
+                break;
+            case 'v':
+                tmp = pureGo(3, tmp);
+                break;
+        }
+    }
+    assert(checkGoal(tmp));
+    assert(now.board == tmp.board);
+    return 0;
+}
 void BFS (GAMESTATE& GameState) {
     QUEUE q;
     HASHMAP map;
@@ -36,29 +69,38 @@ void BFS (GAMESTATE& GameState) {
     //printf("ball box %lld %lld\n", init.board.ball, init.board.box);
     q.push(init);
     map[init.board] = true;
-
+    //init.board.showBoard();
     int count = 0;
+    int stateCount = 0;
     while (!q.empty()) {
         //STATE now = q.front();
         STATE now = q.top();
         q.pop();
         count++;
-        /*
-        if(now.step > 27){
+        if(now.step > 99){
             break;
         }
-        */
         if (!checkGoal(now)) {
+            stateCount++;
             for (int i = 0; i < 4; i++) {
-                go(i, q, map, now);
+                STATE next = now;
+                if (go(i, next) == 1) { // the next step is legal
+                    if (map.find(next.board) == map.end()) { // check the hashtable
+                        map[next.board] = true;
+                        next.ans[next.step++] = moveChar[i];
+                        q.push(next);
+                    }
+                }
             }
         } else {
-            printf("step %d\n", now.step);
+            fprintf(stderr, "step %d\n", now.step);
+            fprintf(stderr, "state %d\n", stateCount);
             printf("penalty %d\n", now.penalty);
             outputAnswer(now);
+            //checkCorrect(init, now);
             return ;
         }
     }
-    printf("QQ no answer! %d\n", count);
+    fprintf(stderr, "QQ no answer! %d\n", count);
     // output the answer
 }
