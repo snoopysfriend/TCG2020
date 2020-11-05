@@ -1,10 +1,13 @@
 /// This file is for the Hungarian Algorithm
 //
 //
-#define size 15
+const int size = 15;
 
 inline int Min(int a1, int a2) {
     return a1<a2?a1:a2;
+}
+inline int Max(int a1, int a2){
+    return a1>a2?a1:a2;
 }
 struct HungarianAlgorithm{
     int costMatrix[size][size];

@@ -1,8 +1,9 @@
+#ifndef BFS_H
+#define BFS_H
 #include "action.cpp"
 #include "cstdio"
 #define LOW 0XFFFFFFFFFFFFF 
 
-/*
 bool checkGoal(STATE st) {
     if (((st.board>>60) ^ ((st.board>>8) & LOW)) == 0) {
         return true;
@@ -10,7 +11,6 @@ bool checkGoal(STATE st) {
         return false;
     }
 }
-*/
 bool checkGoal(STATE st) {
     if ((st.board.ball ^ st.board.box) == 0LL) {
         return true;
@@ -18,7 +18,6 @@ bool checkGoal(STATE st) {
         return false;
     }
 }
-
 void outputAnswer(STATE& state) {
     printf("ans!!! %d\n", state.step);
     for (int i = 0; i < state.step; i++) {
@@ -77,14 +76,11 @@ void BFS (GAMESTATE& GameState) {
         STATE now = q.top();
         q.pop();
         count++;
-        if(now.step > 99){
-            break;
-        }
         if (!checkGoal(now)) {
             stateCount++;
             for (int i = 0; i < 4; i++) {
                 STATE next = now;
-                if (go(i, next) == 1) { // the next step is legal
+                if (go(i, next)) { // the next step is legal
                     if (map.find(next.board) == map.end()) { // check the hashtable
                         map[next.board] = true;
                         next.ans[next.step++] = moveChar[i];
@@ -104,3 +100,4 @@ void BFS (GAMESTATE& GameState) {
     fprintf(stderr, "QQ no answer! %d\n", count);
     // output the answer
 }
+#endif

@@ -113,6 +113,7 @@ typedef struct STATE{ // this is maintain in the queue
     int backward;
     bool ballRes = false;
     bool boxRes = false;
+    int dir = 0;
     BOARD board; 
 
     STATE(){
@@ -121,6 +122,7 @@ typedef struct STATE{ // this is maintain in the queue
 
     STATE(BOARD b){
         board = b;
+        dir = 0;
     }
 
     STATE(const STATE &state){
@@ -129,6 +131,7 @@ typedef struct STATE{ // this is maintain in the queue
         heuristic = state.heuristic;
         ballRes = state.ballRes;
         boxRes = state.boxRes;
+        dir = 0;
         for(int i = 0; i < state.step; i++) {
             ans[i] = state.ans[i];
         }
@@ -136,6 +139,7 @@ typedef struct STATE{ // this is maintain in the queue
     }
     STATE(char Board[16][16], int n, int m) { // init the bit map version of board 
         board = BOARD(Board, n, m); 
+        dir = 0;
         // 0~3 x cor 4~7 y cor 8~59 ball 60~111 box
         /*
         int pos = 0;

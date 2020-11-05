@@ -2,9 +2,10 @@
 // to solve the puzzle
 //
 //
-//#include "BFS.h"
+//#include "BFS.h" 
 #include "AStar.h"
 #include "string.h"
+//#include "IDAStar.h"
 /*
 void initBoard(STATE* state) { // init the bit map version of board 
     int pos = 0; 
@@ -36,11 +37,23 @@ STATE* init() {
     return state;
 }
 */
-
+int checkBallNumber() {
+    int num = 0;
+    for (int i = 0; i < N; i++) {
+        for(int j = 0; j < M; j++) {
+            if(globalBoard[i][j] == 'O') {
+                num++;
+            }
+        }
+    }
+    return num;
+}
 void solvePuzzle() {
     //STATE* state =  init();  // init the state information of the board
     // call the searcher
     GAMESTATE init(globalBoard, N, M);
+    int num = checkBallNumber();
+    printf("%d\n", num);
     AStar(init);
-    //BFS(init);
+    //IDA(init);
 }

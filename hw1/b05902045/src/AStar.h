@@ -1,9 +1,10 @@
+#ifndef ASTAR_H
+#define ASTAR_H
 #include "action.cpp"
 #include "cstdio"
 #include <cmath>
 #include <vector>
 #include "Hungarian.h"
-
 #define LOW 0XFFFFFFFFFFFFF 
 
 /*
@@ -15,6 +16,7 @@ bool checkGoal(STATE st) {
     }
 }
 */
+int eachArea[225][225];
 typedef struct Cor{
     int x;
     int y;
@@ -42,7 +44,7 @@ bool checkGoal(STATE st) {
 }
 
 void outputAnswer(STATE& state) {
-    fprintf(stderr, "Ans!!! \n");
+    //fprintf(stderr, "Ans!!! \n");
     for (int i = 0; i < state.step; i++) {
         printf("%c", state.ans[i]);
     }
@@ -60,7 +62,8 @@ int MinManhattan(COR c1, COR c2) {
 }
 
 int Manhattan(COR c1, COR c2) {
-    return Min(abs(c1.x-c2.x),abs(c1.y-c2.y))+1; 
+    //return Min(abs(c1.x-c2.x),abs(c1.y-c2.y))+1; 
+    return abs(c1.x-c2.x)+abs(c1.y-c2.y); 
 }
 
 int L2Norm(std::vector<COR>& balls, std::vector<COR>& boxs) {
@@ -79,14 +82,12 @@ inline int COR2int(COR c) {
 }
 
 inline int HeaurPlayer(BOARD& board, COR& player, std::vector<COR>& balls, std::vector<COR>& boxs) {
-    int dis = 0;
-    /*
+    int dis = 100;
     for(auto ball: balls) {
         if (!(board.box>>(COR2int(ball)) & 1)) {
            dis = Min(Manhattan(player, ball), dis); 
         }
     }
-    */
     for(auto box: boxs) {
         if (!(board.ball>>(COR2int(box)) & 1)) {
            dis = Min(Manhattan(player, box), dis); 
@@ -121,6 +122,71 @@ int findUnmatched(BOARD& board, std::vector<COR>& balls) {
     }
     return num;
 }
+
+int checkLinearConflict(BOARD& board) {
+    int obs = 0;
+    for (int i = 0; i < N; i++) {
+        for (int j = 1;j < M; j++) {
+            if (isExist(board.box, i*M+j) && !isExist(board.ball,i*M+j-1) && isExist(board.box, i*M+j-1)
+                    && !isExist(board.ball, i*M+j)) {
+                obs += 2;
+            }
+        }
+    }
+    for (int i = 0; i < M; i++) {
+        for (int j = 1;j < N; j++) {
+            if (isExist(board.box, i+j*M) && !isExist(board.ball, i+(j-1)*M) && isExist(board.box, i+(j-1)*M)
+                    && !isExist(board.ball, i+j*M)) {
+                obs += 2;
+            }
+        }
+    }
+    return obs;
+}
+
+int checkObstacle(BOARD& board, COR c1, COR c2) {
+    if(c1.x-c2.x == 0) {
+        for(int i = Min(c1.y, c2.y)+1; i< Max(c1.y, c2.y); i++) {
+            if(isExist(board.ball, c1.x*M+i) || isExist(board.box, c1.x*M+i)) {
+                return 1;
+            }
+        }
+    }
+    if(c1.y-c2.y == 0) {
+        for(int i = Min(c1.x, c2.x)+1; i< Max(c1.x, c2.x); i++) {
+            if(isExist(board.ball, c1.y+i*M) || isExist(board.box, c1.y*i*M)) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+void calculateEachArea() {
+    for (int i = 0 ; i < N; i++) {
+        for (int j = 0;j < M; j++) {
+            int pos = i*M+j;
+            for (int k = 0; k < N; k++) {
+                for (int l = 0; l < M; l++) {
+                    int npos = k*M+l;
+                    if (i == k) {
+                        eachArea[pos][npos] = abs(j-l);
+                    } else if (j == l) {
+                        eachArea[pos][npos] = abs(i-k);
+                    } else{
+                        eachArea[pos][npos] = Min(1+Min(Min(i,k),N-Max(i,k))+abs(j-l), abs(i-k)+1+ Min(Min(j,l), M-Max(j,l)));
+                    }
+                }
+            }
+        }
+    }
+    return ;
+}
+
+int box2ball(COR box, COR ball) {
+    return Manhattan(box, ball);
+}
+
 int HeaurMatch(BOARD& board, std::vector<COR>& balls, std::vector<COR>& boxs, COR player) {
 
     int num = 0;
@@ -141,11 +207,16 @@ int HeaurMatch(BOARD& board, std::vector<COR>& balls, std::vector<COR>& boxs, CO
     int cost[num][num];
     for (int i = 0; i < num; i++) {
         for (int j = 0; j < num; j++) {
-            cost[i][j] = Manhattan(newball[i], newbox[j]); 
-            //cost[i][j] += Min(Manhattan(player, newbox[j]), Manhattan(newball[i], player)); 
+            /*
+            if (checkObstacle(board, newball[i], newbox[j])) {
+                cost[i][j] = Manhattan(newball[i], newbox[j])+2; 
+            }*/
+            //cost[i][j] = Min(Manhattan(newball[i], newbox[j]), MinManhattan(newball[i], newbox[j])+Manhattan(newball[i], player));
+            //cost[i][j] = Min(Manhattan(newball[i], newbox[j]), eachArea[COR2int(newball[i])][COR2int(newbox[i])]);
+            cost[i][j] = Manhattan(newball[i], newbox[j]);
+            //cost[i][j] += Manhattan(player, newbox[j]); 
         }
     }
-
     HungarianAlgorithm H(num); 
     for (int i = 0; i < num; i++) {
         for (int j = 0; j < num; j++) {
@@ -158,6 +229,7 @@ int HeaurMatch(BOARD& board, std::vector<COR>& balls, std::vector<COR>& boxs, CO
         //printf("%d\n", H.result[i]);
         dis += cost[i][H.result[i]];
     }
+    dis += newbox.size()*5;
     return dis;
 
 }
@@ -216,7 +288,8 @@ void AStar (GAMESTATE& GameState) {
 
     int count = 0;
     int stateCount = 0;
-    Restriction();
+    //Restriction();
+    //calculateEachArea();
     while (!q.empty()) {
         //STATE now = q.front();
         STATE now = q.top();
@@ -226,7 +299,8 @@ void AStar (GAMESTATE& GameState) {
             stateCount++;
             for (int i = 0; i < 4; i++) {
                 STATE next = now;
-                if (go(i, next) == 1 && map.find(next.board) == map.end()) { // it is a legal move and not been yet
+                int tmp;
+                if (tmp = go(i, next) && map.find(next.board) == map.end()) { // it is a legal move and not been yet
                     // calculate the heuritic function 
                     /*
                     if((next.step % 2) == 0) {
@@ -240,13 +314,14 @@ void AStar (GAMESTATE& GameState) {
                 }
             }
         } else {
-            fprintf(stderr, "step %d\n", now.step);
-            fprintf(stderr, "state %d\n", stateCount);
+            //fprintf(stderr, "step %d\n", now.step);
+            //fprintf(stderr, "state %d\n", stateCount);
             printf("%d\n", now.penalty);
             outputAnswer(now);
             return ;
         }
     }
-    fprintf(stderr, "QQ no answer! %d\n", count);
+    //fprintf(stderr, "QQ no answer! %d\n", count);
     // output the answer
 }
+#endif

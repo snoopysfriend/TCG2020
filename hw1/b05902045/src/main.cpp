@@ -5,9 +5,9 @@
 int main() {
     int count = 0;
     while (readFile() != -1) {
-        fprintf(stderr, "Test case %d!\n", count++);
+        //fprintf(stderr, "Test case %d!\n", count++);
         solvePuzzle();
-        fprintf(stderr, "===========================\n");
+        //fprintf(stderr, "===========================\n");
     }
     return 0;
 }

@@ -57,9 +57,10 @@ void moveBall(STATE &now, int sx, int sy, int dir) {
     int newPos = tx*M+ty;
     now.board.ball ^= 1LL<<(sx*M+sy); // remove old pos
     now.board.ball |= 1LL<<(newPos); // add new pos
+    /*
     if(!isExist(now.board.box, newPos) && isExist(RES, newPos)) {
        now.ballRes = true; 
-    }
+    }*/
 }
 int deadlockDetection(int x, int y) {
     return 0;
@@ -71,9 +72,10 @@ void moveBox(STATE &now, int start, int target) {
     }
     now.board.box |= 1LL<<target;
     now.board.box ^= 1LL<< start; 
+    /*
     if(!isExist(now.board.ball, target) && isExist(RES, target)) {
        now.boxRes = true; 
-    }
+    }*/
 }
 
 int boxNum(LL box){
@@ -159,10 +161,15 @@ int go(int dir, STATE& state) { // try to push on the direction dir
             }
         } else{
             state.penalty++;
+            state.board.player = 0;
+            state.board.player |= nx;
+            state.board.player |= ny<<4;
+            return 2;
         }
+        /*
         if (state.ballRes && state.boxRes) { // there is deadlock
             return 0;
-        }
+        }*/
         state.board.player = 0;
         state.board.player |= nx;
         state.board.player |= ny<<4;
