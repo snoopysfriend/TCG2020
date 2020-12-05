@@ -259,9 +259,9 @@ class Board {
             } else if (num_pieces[BLUE] > num_pieces[RED]) {
                 status = Status::BlueWin;
             } else if (type_of(top_left) > type_of(bottom_right)) {
-                status = Status::RedWin;
-            } else if (type_of(top_left) < type_of(bottom_right)) {
                 status = Status::BlueWin;
+            } else if (type_of(top_left) < type_of(bottom_right)) {
+                status = Status::RedWin;
             } else {
                 status = Status::Draw;
             }

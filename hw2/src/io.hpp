@@ -248,7 +248,7 @@ std::string do_human_move(Board &b) {
                 break;
             case '\033':
                 c = getch();
-                if (c != '[') {
+                if (c == 0) {
                     std::cout << "\a"; continue;
                 }
                 c = getch();
