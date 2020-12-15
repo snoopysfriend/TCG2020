@@ -1,10 +1,9 @@
-//#ifndef MCTS_H
-//#define MCTS_H
+#ifndef MCTS_H
+#define MCTS_H
+#include <vector>
 #include "time.h"
 #include "cstdlib"
-//#include "util.h"
 #include "math.h"
-//#include "types.hpp"
 #include "einstein.hpp"
 # define MaxChild 18 // because 6 peices and 3 of each
 # define MaxNode 55000 // maximum nodes in a tree
@@ -29,13 +28,24 @@ public:
     bool is_terminal();
     Node* next_step();
     Node();
+    Node(const Node &n) {
+        p_id = n.p_id;
+        ply = n.ply;
+        Nchild = n.Nchild;
+        depth = n.depth;
+        Ntotal = 0;
+        CsqrtlogNtotal = 0;
+        scores = 0;
+        sum2 = 0;
+        average = 0;
+    }
 
 };
 
 struct MCTS {
 private:
 public:
-    Node tree[MaxNode];
+    std::vector<Node> tree;
     int nodeId;
     int Select(int, std::vector<Move>&);
     void init();
@@ -47,4 +57,4 @@ public:
     int findRoot(int, Move);
 
 };
-//#endif
+#endif

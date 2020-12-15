@@ -30,7 +30,6 @@ void Node::update(int deltaS, int deltaS2, int deltaN) {
     scores += deltaS;
     sum2 += deltaS2;
     average = (double)scores / (double)Ntotal;
-    //flog << "update"<< deltaS << " "<< scores << " " << Ntotal << " " << average << std::endl;
     variance = ((double)sum2 - 2 * average * scores)/ Ntotal; 
 }
 
@@ -65,18 +64,14 @@ void MCTS::Simulate(Node* node, int deltaN, Board b) {
     BackPropagate(node, deltaS, deltaS2, deltaN);
 }
 
+
 void MCTS::init() {
-    Node* node = &tree[0];
-    //node->ply = -1;
-    node->p_id = 0; // the roots parent is itself
-    node->depth = 0;
-    node->Ntotal = 0;
-    node->CsqrtlogNtotal = 0;
-    node->scores = 0;
-    node->sum2 = 0;
-    node->average = 0;
-    node->variance = 0;
-    node->Nchild = 0;
+    Node root;
+    tree.reserve(500000);
+    //tree.push_back(root);
+    tree[0].p_id = 0; // the roots parent is itself
+    tree[0].depth = 0;
+    tree[0].Nchild = 0;
     nodeId = 1;
 }
 
@@ -104,7 +99,6 @@ int MCTS::Select(int root, std::vector<Move>& PV) {
 }
 
 void MCTS::Expand(int id, std::vector<Move> PV, Board b) {
-    Node* node = &tree[id];
     for (auto move: PV) {
         b.do_move(move);
         b.update_status();
@@ -117,19 +111,15 @@ void MCTS::Expand(int id, std::vector<Move> PV, Board b) {
         } else {
             mL_size = b.legal_actions<BLUE>(mL);
         }
-        node->Nchild = mL_size;
+        tree[id].Nchild = mL_size;
         for (int i = 0; i < mL_size; i++) {
-            node->c_id[i] = nodeId; 
-            Node* child = &tree[nodeId];
-            child->ply = mL[i];
-            child->p_id = id;
-            child->depth = node->depth+1;
-            child->Nchild = 0;
+            tree[id].c_id[i] = nodeId;
+            tree[nodeId].p_id = id;
+            tree[nodeId].Nchild = 0;
+            tree[nodeId].depth = tree[id].depth+1;
+            tree[nodeId].ply = mL[i];
+            Simulate(&tree[nodeId], 15, b);
             nodeId++;
-            if (nodeId >= 55000) {
-                nodeId = 0;
-            }
-            Simulate(child, 15, b);
         }
     }
 }
@@ -193,30 +183,24 @@ int main() {
         start = getchar();
         flog << init[0]<< " " << init[1] << std::endl; 
         flog << start << std::endl;
+        srand(0);
         b.init(init[0], init[1]);
         MCTS tree;
-        int step = 0;
-        srand(0);
+        tree.init();
         int root = 0;
-        tree.tree[root].p_id = 0;
-        tree.nodeId = 1;
         for (myTurn = (start == 'f'); !b.is_terminal(); flip_bit(myTurn)) {
             if (myTurn) { // do the move                    
                 myside = b.side_to_move();
                 flog << myside << std::endl;
-                //tree.init();
-                //flog << "step" << tree.nodeId << std::endl;
                 int N = 1000;
                 for (int i = 0; i < N; i++) {
                     std::vector<Move> PV;
                     int node = tree.Select(root, PV); // choosing the PV
                     tree.Expand(node, PV, b);
                 }
-                flog << "step" << tree.nodeId << std::endl;
+                flog << "node num " << tree.nodeId << std::endl;
                 int node = tree.chooseBest(root);
                 root = node;
-                flog <<"root" << root << std::endl;
-                //flog <<"Select "<< node->depth << " "<< node->average << std::endl;
                 move = tree.tree[node].ply;
                 std::string move_str = b.move_to_str(move);
                 flog << move_str << std::endl; 
@@ -233,7 +217,6 @@ int main() {
                 b.update_status();
                 root = tree.findRoot(root, m);
                 flog <<"root" << root << std::endl;
-                //assert(root != 0);
                 tree.tree[root].p_id = root;
                 tree.tree[root].depth = 0;
                 // TODO need to accelerate the simulation?
