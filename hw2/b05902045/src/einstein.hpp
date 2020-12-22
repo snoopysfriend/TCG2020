@@ -8,6 +8,7 @@
 
 class Board {
   public:
+    
     void init(std::string topLeft, std::string bottomRight) {
         sideToMove = RED;
         status = Status::RedPlay;
@@ -22,6 +23,14 @@ class Board {
         set<RED>(topLeft);
         set<BLUE>(bottomRight);
     }
+
+	void init2() {
+        for (Square s = SQ_A1; s < SQUARE_NB; ++s) {
+            if ( board[s] != NO_PIECE ) {
+				pieces[board[s]] = s;
+			}
+        }
+	}
 
     template <Color c>
     void set(std::string init_pc_pos) {
@@ -92,21 +101,36 @@ class Board {
         do_move(m);
     }
 
-    void do_move(Move m) {
+	void do_move2(Move m) {
         if (m != MOVE_PASS) {
-            if (!is_move_ok(m)) {
-                std::cerr << "from " << from_sq(m) << " to " << to_sq(m) << std::endl;
-                assert(is_move_ok(m));
-            }
 
-            Color us = sideToMove;
             Square from = from_sq(m);
             Square to = to_sq(m);
             Piece pc = piece_on(from);
             Piece captured = piece_on(to);
 
-            assert(color_of(pc) != COLOR_NONE);
-            assert(color_of(pc) == us);
+            if (captured != NO_PIECE) {
+                remove_piece(pc, from);
+				pieces[captured] = SQ_NONE;
+                num_pieces[color_of(captured)]--;
+            }
+
+            move_piece(pc, from, to);
+			pieces[pc] = to;
+        }
+        sideToMove = ~sideToMove;
+        status = (sideToMove == RED) ? Status::RedPlay : Status::BluePlay;
+        gameLength++;
+
+	}
+
+    void do_move(Move m) {
+        if (m != MOVE_PASS) {
+
+            Square from = from_sq(m);
+            Square to = to_sq(m);
+            Piece pc = piece_on(from);
+            Piece captured = piece_on(to);
 
             if (captured != NO_PIECE) {
                 remove_piece(pc, from);
@@ -139,6 +163,38 @@ class Board {
 
         return ss.str();
     }
+
+    template <Color Us> 
+	int legal_actions2(MoveList &mL) {
+		int idx = 0;
+        constexpr Direction Ver = (Us == RED ? NORTH : SOUTH);
+        constexpr Direction Hor = (Us == RED ? EAST : WEST);
+        constexpr Direction Diag = (Us == RED ? NORTH_EAST : SOUTH_WEST);
+        constexpr File Edge = (Us == RED ? FILE_F : FILE_A);
+
+		constexpr int start = (Us == RED?6:0);
+		constexpr int end = (Us == RED?12:0);
+
+		for (int num = start; num < end; ++num) {
+			Square s= pieces[num];
+			if (s != SQ_NONE) {
+                if (is_ok(s + Ver)) {
+                    mL[idx++] = make_move(s, s + Ver);
+                }
+                if (file_of(s) != Edge && is_ok(s + Hor)) {
+                    mL[idx++] = make_move(s, s + Hor);
+                }
+                if (file_of(s) != Edge && is_ok(s + Diag)) {
+                    mL[idx++] = make_move(s, s + Diag);
+                }
+			}
+		}
+        if (idx == 0) {
+            mL[idx++] = MOVE_PASS;
+        }
+
+		return idx;
+	}
 
     template <Color Us>
     int legal_actions(MoveList &mL) {
@@ -220,6 +276,53 @@ class Board {
         }
 
         return true;
+    }
+
+    void update_status2() {
+        if (num_pieces[RED] == 0) {
+            status = Status::BlueWin;
+            return;
+        }
+        if (num_pieces[BLUE] == 0) {
+            status = Status::RedWin;
+            return;
+        }
+        bool b_goal = true, r_goal = true;
+
+		for (int i = 0; i < 6; i++) {
+			if (pieces[i] != SQ_NONE) {
+                if (!goal<RED>(pieces[i])) {
+                    r_goal = false;
+                }
+			}
+		}
+		for (int i = 6; i < 12; i++) {
+			if (pieces[i] != SQ_NONE) {
+                if (!goal<BLUE>(pieces[i])) {
+                    b_goal = false;
+                }
+			}
+		}
+
+        if (r_goal && !b_goal && num_pieces[RED] == PIECE_TYPE_NB) {
+            status = Status::RedWin;
+        } else if (b_goal && !r_goal && num_pieces[BLUE] == PIECE_TYPE_NB) {
+            status = Status::BlueWin;
+        } else if (r_goal && b_goal) {
+            Piece top_left = piece_on(SQ_A1);
+            Piece bottom_right = piece_on(SQ_F6);
+            if (num_pieces[RED] > num_pieces[BLUE]) {
+                status = Status::RedWin;
+            } else if (num_pieces[BLUE] > num_pieces[RED]) {
+                status = Status::BlueWin;
+            } else if (type_of(top_left) > type_of(bottom_right)) {
+                status = Status::BlueWin;
+            } else if (type_of(top_left) < type_of(bottom_right)) {
+                status = Status::RedWin;
+            } else {
+                status = Status::Draw;
+            }
+        }
     }
 
     void update_status() {
@@ -335,6 +438,8 @@ class Board {
     int gameLength;
     Move hl_move; // highlighted move
     Piece board[SQUARE_NB];
+	Square pieces[12];
+
 
     //Piece initial[SQUARE_NB];
     int num_pieces[COLOR_NB];

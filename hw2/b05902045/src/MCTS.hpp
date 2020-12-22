@@ -17,6 +17,7 @@ public:
     int Nchild; // number of children
     int Ntotal; // total number of simulation
     double CsqrtlogNtotal; 
+    double CsqrtNtotal; 
     //int wins; // number of winning
     int scores; // sum1 sum of scores
     int sum2; // sum2 sum of each square

@@ -17,6 +17,7 @@ Node::Node() {
     depth = 0;
     Ntotal = 0;
     CsqrtlogNtotal = 0;
+    CsqrtNtotal = 0;
     scores = 0;
     sum2 = 0;
     average = 0;
@@ -27,6 +28,7 @@ Node::Node() {
 void Node::update(int deltaS, int deltaS2, int deltaN) {
     Ntotal += deltaN; 
     CsqrtlogNtotal = 1.0 * sqrt(log(double(Ntotal)));
+    CsqrtNtotal = sqrt(double(Ntotal));
     scores += deltaS;
     sum2 += deltaS2;
     average = (double)scores / (double)Ntotal;
@@ -41,11 +43,14 @@ bool Node::is_terminal() {
 void MCTS::Simulate(Node* node, int deltaN, Board b) {
     int deltaS = 0;
     Board tmpB;
+	b.do_move(node->ply);
+	b.update_status();
     for (int i = 0; i < deltaN; i++) {
         MoveList mL;
         int mL_size;
         Move move;
         tmpB = b;
+		//tmpB.init2();
         while (!tmpB.is_terminal()) {
             if (tmpB.side_to_move() == RED) {
                 mL_size = tmpB.legal_actions<RED>(mL);
@@ -67,7 +72,7 @@ void MCTS::Simulate(Node* node, int deltaN, Board b) {
 
 void MCTS::init() {
     Node root;
-    tree.reserve(500000);
+    tree.reserve(1000000);
     //tree.push_back(root);
     tree[0].p_id = 0; // the roots parent is itself
     tree[0].depth = 0;
@@ -76,7 +81,7 @@ void MCTS::init() {
 }
 
 double MCTS::UCB(int id) {
-    return ((tree[id].depth & 1)? (tree[id].average):(1.0-tree[id].average)) + (tree[tree[id].p_id].CsqrtlogNtotal / tree[id].CsqrtlogNtotal); 
+    return ((tree[id].depth & 1)? (tree[id].average):(1.0-tree[id].average)) + (tree[tree[id].p_id].CsqrtlogNtotal / tree[id].CsqrtNtotal); 
 }
 
 int MCTS::Select(int root, std::vector<Move>& PV) {
@@ -163,7 +168,7 @@ void logger(std::string logfile) {
 }
 
 int main() {
-    logger(".log.mcts3");
+    logger(".log.mcts4");
 
     Board b;
     Move move;
@@ -192,7 +197,7 @@ int main() {
             if (myTurn) { // do the move                    
                 myside = b.side_to_move();
                 flog << myside << std::endl;
-                int N = 1000;
+                int N = 2000;
                 for (int i = 0; i < N; i++) {
                     std::vector<Move> PV;
                     int node = tree.Select(root, PV); // choosing the PV
