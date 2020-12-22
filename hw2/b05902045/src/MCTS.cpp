@@ -194,7 +194,7 @@ int main() {
         MCTS tree;
         tree.init();
         int root = 0;
-        fd_set readfds;
+        int count = 0;
         for (myTurn = (start == 'f'); !b.is_terminal(); flip_bit(myTurn)) {
             if (myTurn) { // do the move                    
                 myside = b.side_to_move();
@@ -216,6 +216,7 @@ int main() {
                 b.do_move(move);
                 b.update_status();
                 flog << b;
+                count = 1;
             } else { // receive the opponents move
                 int flag = 1;
                 while (flag) {
@@ -233,7 +234,7 @@ int main() {
                         //tree.tree[root].depth = 0;
                         // TODO need to accelerate the simulation?
                         flog << b;
-                    } else {
+                    } else if (count){
                         std::vector<Move> PV;
                         int node = tree.Select(root, PV); // choosing the PV
                         tree.Expand(node, PV, b);
