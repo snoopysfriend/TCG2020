@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <vector>
 #include "einstein.hpp"
+#include "io.cpp"
 //#include "types.hpp"
 //#include "einstein.hpp"
 
@@ -72,7 +73,7 @@ void MCTS::Simulate(Node* node, int deltaN, Board b) {
 
 void MCTS::init() {
     Node root;
-    tree.reserve(1000000);
+    tree.reserve(2000000);
     //tree.push_back(root);
     tree[0].p_id = 0; // the roots parent is itself
     tree[0].depth = 0;
@@ -193,6 +194,7 @@ int main() {
         MCTS tree;
         tree.init();
         int root = 0;
+        fd_set readfds;
         for (myTurn = (start == 'f'); !b.is_terminal(); flip_bit(myTurn)) {
             if (myTurn) { // do the move                    
                 myside = b.side_to_move();
@@ -206,6 +208,7 @@ int main() {
                 flog << "node num " << tree.nodeId << std::endl;
                 int node = tree.chooseBest(root);
                 root = node;
+                tree.tree[root].p_id = root;
                 move = tree.tree[node].ply;
                 std::string move_str = b.move_to_str(move);
                 flog << move_str << std::endl; 
@@ -214,18 +217,28 @@ int main() {
                 b.update_status();
                 flog << b;
             } else { // receive the opponents move
-                num = getchar();
-                dir = getchar();
-                flog << myTurn << num << dir << std::endl;
-                Move m = b.str_to_move(num, dir);
-                b.do_move(num, dir);
-                b.update_status();
-                root = tree.findRoot(root, m);
-                flog <<"root" << root << std::endl;
-                tree.tree[root].p_id = root;
-                tree.tree[root].depth = 0;
-                // TODO need to accelerate the simulation?
-                flog << b;
+                int flag = 1;
+                while (flag) {
+                    reselect(0, flag);
+                    if (!flag) {
+                        num = getchar();
+                        dir = getchar();
+                        flog << myTurn << num << dir << std::endl;
+                        Move m = b.str_to_move(num, dir);
+                        b.do_move(num, dir);
+                        b.update_status();
+                        root = tree.findRoot(root, m);
+                        flog <<"root" << root << std::endl;
+                        tree.tree[root].p_id = root;
+                        //tree.tree[root].depth = 0;
+                        // TODO need to accelerate the simulation?
+                        flog << b;
+                    } else {
+                        std::vector<Move> PV;
+                        int node = tree.Select(root, PV); // choosing the PV
+                        tree.Expand(node, PV, b);
+                    }
+                }
             }
         }
         flog<< "winner" << b.who_won() << std::endl;
