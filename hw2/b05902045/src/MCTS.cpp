@@ -11,7 +11,6 @@
 
 Color myside;
 std::fstream flog;
-int prev = 0;
 
 inline void flip_bit(bool& x) { x= !x; }
 Node::Node() {
@@ -46,21 +45,21 @@ void MCTS::Simulate(Node* node, int deltaN, Board b) {
     Board tmpB;
 	b.do_move(node->ply);
 	b.update_status();
+	MoveList2 mL;
     for (int i = 0; i < deltaN; i++) {
-        MoveList mL;
         int mL_size;
-        Move move;
+        int move;
         tmpB = b;
-		//tmpB.init2();
+		tmpB.init2();
         while (!tmpB.is_terminal()) {
             if (tmpB.side_to_move() == RED) {
-                mL_size = tmpB.legal_actions<RED>(mL);
+                mL_size = tmpB.legal_actions2<RED>(mL);
             } else {
-                mL_size = tmpB.legal_actions<BLUE>(mL);
+                mL_size = tmpB.legal_actions2<BLUE>(mL);
             }
             move  = mL[rand() % mL_size];
-            tmpB.do_move(move);
-            tmpB.update_status();
+            tmpB.do_move2(move);
+            tmpB.update_status2();
         }
         if ((tmpB.who_won() == myside)) {
             deltaS++;
@@ -119,6 +118,9 @@ void MCTS::Expand(int id, std::vector<Move> PV, Board b) {
         }
         tree[id].Nchild = mL_size;
         for (int i = 0; i < mL_size; i++) {
+			if (nodeId >= 2000000) {
+				nodeId = 0;
+			}
             tree[id].c_id[i] = nodeId;
             tree[nodeId].p_id = id;
             tree[nodeId].Nchild = 0;
@@ -199,11 +201,12 @@ int main() {
             if (myTurn) { // do the move                    
                 myside = b.side_to_move();
                 flog << myside << std::endl;
-                int N = 2000;
+                int N = 5000;
                 for (int i = 0; i < N; i++) {
                     std::vector<Move> PV;
                     int node = tree.Select(root, PV); // choosing the PV
                     tree.Expand(node, PV, b);
+					flog << "1" << std::endl;
                 }
                 flog << "node num " << tree.nodeId << std::endl;
                 int node = tree.chooseBest(root);

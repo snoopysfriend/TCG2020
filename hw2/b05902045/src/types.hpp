@@ -158,6 +158,10 @@ constexpr Move make_move(Square from, Square to) {
     return Move((from * SQUARE_NB) + to);
 }
 
+constexpr int make_move2(Square from, Square to) {
+    return (from << 10) + to;
+}
+
 constexpr Move reverse_move(Move m) {
     return make_move(to_sq(m), from_sq(m));
 }
@@ -201,6 +205,7 @@ inline std::ostream& operator<<(std::ostream &os, const Piece &pc) {
 
 #define MAX_MOVES 18 // 3 x 6
 using MoveList = std::array<Move, MAX_MOVES>;
+using MoveList2 = std::array<int, MAX_MOVES>;
 using PieceList = std::array<int, PIECE_TYPE_NB>;
 
 Square init_sq_pos[COLOR_NB][PIECE_TYPE_NB] = {
