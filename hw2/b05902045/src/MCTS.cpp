@@ -6,6 +6,18 @@
 #include <vector>
 #include "einstein.hpp"
 #include "io.cpp"
+#include <sys/time.h>
+#include <signal.h>
+
+int timeoutFlag = 1;
+int avgHight = 0;
+void sigroutine(int signo) {
+	switch (signo) {
+		case SIGALRM:
+			timeoutFlag = 0;
+			break;
+	}	
+}
 
 Color myside;
 std::fstream flog;
@@ -236,6 +248,13 @@ int main() {
     char start, num, dir;
     std::string move_str;
     char init[2][PIECE_TYPE_NB + 1];
+	struct itimerval value, ovalue;
+	signal(SIGALRM, sigroutine);
+	value.it_value.tv_sec = 9;
+	value.it_value.tv_usec = 0;
+	value.it_interval.tv_sec = 0;
+	value.it_interval.tv_usec = 0;
+
     do {
         for (int i = 0; i < COLOR_NB; i++) {
             for (int j = 0; j < PIECE_TYPE_NB; j++) {
@@ -254,16 +273,32 @@ int main() {
         tree.init();
         int root = 0;
         int count = 0;
+		int gamelength = 0;
+		int N = 4000;
+		int times = 0;
         for (myTurn = (start == 'f'); !b.is_terminal(); flip_bit(myTurn)) {
+
             if (myTurn) { // do the move                    
+				setitimer(ITIMER_REAL, &value, &ovalue);
                 myside = b.side_to_move();
                 flog << myside << std::endl;
-                int N = 4000;
-                for (int i = 0; i < N; i++) {
-                    std::vector<Move> PV;
-                    int node = tree.Select(root, PV); // choosing the PV
-                    tree.Expand(node, PV, b);
-                }
+				timeoutFlag = 1;
+				if (gamelength < 40) {
+					while (timeoutFlag) {
+						std::vector<Move> PV;
+						int node = tree.Select(root, PV); // choosing the PV
+						avgHight += tree.tree[node].depth;
+						times++;
+						tree.Expand(node, PV, b);
+					}
+			    } else {
+					for (int i = 0; i < N; i++) {
+						std::vector<Move> PV;
+						int node = tree.Select(root, PV); // choosing the PV
+						tree.Expand(node, PV, b);
+					}
+				}
+				flog << "Hight "<< (double)avgHight/ times << std::endl;
                 //flog << "pp num" << ppN << std::endl;
                 flog << "node num " << tree.nodeId << std::endl;
                 int node = tree.chooseBest(root);
@@ -275,6 +310,7 @@ int main() {
                 std::cout << move_str << std::flush; 
                 b.do_move(move);
                 b.update_status();
+				gamelength++;
                 flog << b;
                 count = 1;
             } else { // receive the opponents move
@@ -298,6 +334,7 @@ int main() {
                         tree.Expand(node, PV, b);
                     }
                 }
+				gamelength++;
             }
         }
         flog<< "winner" << b.who_won() << std::endl;
