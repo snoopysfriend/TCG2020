@@ -25,14 +25,17 @@ class Board {
     }
 
 	void init2() {
-		for (int i = 0; i < 12; i++) {
-			pieces[i] = SQ_NONE;
-		}
+        for (int i = 0; i < 12; i++) {
+            pieces[i] = SQ_NONE;
+        }
+
         for (Square s = SQ_A1; s < SQUARE_NB; ++s) {
-            if ( board[s] != NO_PIECE ) {
-				pieces[board[s]] = s;
+            Piece pc = piece_on(s);
+            if ( pc != NO_PIECE ) {
+				pieces[pc] = s;
 			}
         }
+
 	}
 
     template <Color c>
@@ -104,11 +107,11 @@ class Board {
         do_move(m);
     }
 
-	void do_move2(int m) {
-        if (m != -1) {
+	void do_move2(Move m) {
+        if (m != MOVE_PASS) {
 
-            Square from = Square(m>>10);
-            Square to = Square(m & 0xFF);
+            Square from = from_sq(m);
+            Square to = to_sq(m);
             Piece pc = piece_on(from);
             Piece captured = piece_on(to);
 
@@ -141,7 +144,6 @@ class Board {
             }
 
             move_piece(pc, from, to);
-			pieces[pc] = to;
         }
         sideToMove = ~sideToMove;
         status = (sideToMove == RED) ? Status::RedPlay : Status::BluePlay;
@@ -169,32 +171,32 @@ class Board {
     }
 
     template <Color Us> 
-	int legal_actions2(MoveList2 &mL) {
+	int legal_actions2(MoveList &mL) {
 		int idx = 0;
         constexpr Direction Ver = (Us == RED ? NORTH : SOUTH);
         constexpr Direction Hor = (Us == RED ? EAST : WEST);
         constexpr Direction Diag = (Us == RED ? NORTH_EAST : SOUTH_WEST);
         constexpr File Edge = (Us == RED ? FILE_F : FILE_A);
 
-		int start = (Us == RED?0:6);
-		int end = (Us == RED?6:12);
+		constexpr int start = (Us == RED?0:6);
+		constexpr int end = (Us == RED?6:12);
 
 		for (int num = start; num < end; ++num) {
-			Square s= pieces[num];
+			Square s = pieces[num];
 			if (s != SQ_NONE) {
                 if (is_ok(s + Ver)) {
-                    mL[idx++] = make_move2(s, s + Ver);
+                    mL[idx++] = make_move(s, s + Ver);
                 }
                 if (file_of(s) != Edge && is_ok(s + Hor)) {
-                    mL[idx++] = make_move2(s, s + Hor);
+                    mL[idx++] = make_move(s, s + Hor);
                 }
                 if (file_of(s) != Edge && is_ok(s + Diag)) {
-                    mL[idx++] = make_move2(s, s + Diag);
+                    mL[idx++] = make_move(s, s + Diag);
                 }
 			}
 		}
         if (idx == 0) {
-            mL[idx++] = -1;
+            mL[idx++] = MOVE_PASS;
         }
 
 		return idx;
@@ -372,8 +374,9 @@ class Board {
             } else {
                 status = Status::Draw;
             }
-		}
-	}
+        }
+    }
+
     bool is_terminal() const {
         if (status == Status::RedWin || status == Status::BlueWin || status == Status::Draw) {
             return true;

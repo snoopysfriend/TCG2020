@@ -13,6 +13,7 @@ public:
     Move ply; // the ply from parent to here 
     int p_id; // parent id 
     int c_id[MaxChild]; // child id
+    bool pp[MaxChild]; // child id
     int depth; // depth
     int Nchild; // number of children
     int Ntotal; // total number of simulation
@@ -25,6 +26,7 @@ public:
     double variance; // variance of score
     //char init[2][7]; // to init the board
     void update(int, int, int);
+    void update2(int, int, int);
     void addChild();
     bool is_terminal();
     Node* next_step();
@@ -54,6 +56,7 @@ public:
     void Simulate(Node*, int, Board); // DFS random simulate the node with budget times 
     void BackPropagate(Node*, int, int, int);
     double UCB(int);
+    double UCB2(int, double, double);
     int chooseBest(int );
     int findRoot(int, Move);
 

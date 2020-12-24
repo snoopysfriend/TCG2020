@@ -159,7 +159,7 @@ constexpr Move make_move(Square from, Square to) {
 }
 
 constexpr int make_move2(Square from, Square to) {
-    return (from << 10) + to;
+    return int(from << 10) + to;
 }
 
 constexpr Move reverse_move(Move m) {
