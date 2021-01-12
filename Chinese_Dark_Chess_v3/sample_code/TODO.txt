@@ -1,0 +1,4 @@
+1. write the run script to test my AI
+2. test the nega scout
+3. write the flip algorithm
+

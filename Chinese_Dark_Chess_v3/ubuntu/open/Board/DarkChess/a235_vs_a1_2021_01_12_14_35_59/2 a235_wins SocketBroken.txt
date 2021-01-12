@@ -1,0 +1,54 @@
+* 2:38pm Jan 12, 2021
+* a235 vs a1
+* 1 2 2 2 2 2 5 1 2 2 2 2 2 5
+* X X X X
+* X X X X
+* X X X X
+* X X X X
+* X X X X
+* X X X X
+* X X X X
+* X X X X
+* first 2
+* time 900
+* 1. 
+* SocketBroken a235 wins
+* Comment 0 0
+0. 
+
+# 17 #
+=1 MyAI
+=2 1.0.0
+------------Black-------------
+<8>    X    X    X    X 
+<7>    X    X    X    X 
+<6>    X    X    X    X 
+<5>    X    X    X    X 
+<4>    X    X    X    X 
+<3>    X    X    X    X 
+<2>    X    X    X    X 
+<1>    X    X    X    X 
+
+      <a>  <b>  <c>  <d> 
+
+=7
+=15
+=14
+=5
+
+# 17 #
+1 name
+=1 MyAI
+2 version
+=2 1.0.0
+7 reset_board
+=7
+15 time_setting 900000
+=15
+14 ready
+=14
+5 quit
+Bye
+=5
+
+###
