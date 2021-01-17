@@ -7,6 +7,8 @@
 #include <math.h>
 #include <time.h>
 
+#include "board.h"
+
 #define RED 0
 #define BLACK 1
 #define CHESS_COVER -1
@@ -38,7 +40,8 @@ class MyAI
 public:
 	MyAI(void);
 	~MyAI(void);
-
+    void Init();
+    //int ConvertChessNo(int);
 	// commands
 	bool protocol_version(const char* data[], char* response);// 0
 	bool name(const char* data[], char* response);// 1
@@ -59,12 +62,14 @@ public:
 	bool time_left(const char* data[], char* response);// 16
 	bool showboard(const char* data[], char* response);// 17
 
+	void generateMove(char move[6]);
+    double Nega_Scout(int* move, const int color, const int depth, const int remain_depth, double Alpha, double Beta);
 private:
+    Board gameBoard;
+    Hash_table table;
 	int Color;
+    int turn;
 	int Red_Time, Black_Time;
-	int Board[32];
-	int CoverChess[14];
-	int Red_Chess_Num, Black_Chess_Num;
 	int node;
 
 	// Utils
@@ -72,15 +77,9 @@ private:
 	int ConvertChessNo(int input);
 
 	// Board
-	void initBoardState();
-	void generateMove(char move[6]);
-	void MakeMove(int* board, int* red_chess_num, int* black_chess_num, int* cover_chess, const int move, const int chess);
-	void MakeMove(int* board, int* red_chess_num, int* black_chess_num, int* cover_chess, const char move[6]);
-	bool Referee(const int* board, const int Startoint, const int EndPoint, const int color);
-	int Expand(const int* board, const int color, int *Result);
-	double Evaluate(const int* board);
-	double Nega_max(const int* board, int* move, const int red_chess_num, const int black_chess_num, const int* cover_chess, const int color, const int depth, const int remain_depth);
-    double Nega_Scout(const int* board, int* move, const int red_chess_num, const int black_chess_num, const int* cover_chess, const int color, const int depth, const int remain_depth, double Alpha, double Beta);
+	//void initBoardState();
+	//bool Referee(const int* board, const int Startoint, const int EndPoint, const int color);
+	//double Nega_max(const int* board, int* move, const int red_chess_num, const int black_chess_num, const int* cover_chess, const int color, const int depth, const int remain_depth);
 
 	// Display
 	void Pirnf_Chess(int chess_no,char *Result);

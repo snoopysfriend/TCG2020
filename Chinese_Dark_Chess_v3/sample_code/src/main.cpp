@@ -52,6 +52,7 @@ int main(){
   int id;
   bool isFailed;
   MyAI myai;
+  myai.Init();
   do{
     // read command
     fgets(read, 1024, stdin);

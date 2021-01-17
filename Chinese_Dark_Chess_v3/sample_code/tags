@@ -1,0 +1,114 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BLACK	src/MyAI.h	11;"	d
+BOARDSIZE	src/main.cpp	/^  BOARDSIZE, \/\/ 6$/;"	e	enum:COMMANDS	file:
+BOARDSIZE	src/main_clear.cpp	/^  BOARDSIZE, \/\/ 6$/;"	e	enum:COMMANDS	file:
+Black_Chess_Num	src/MyAI.h	/^	int Red_Chess_Num, Black_Chess_Num;$/;"	m	class:MyAI
+Black_Time	src/MyAI.h	/^	int Red_Time, Black_Time;$/;"	m	class:MyAI
+Board	src/MyAI.h	/^	int Board[32];$/;"	m	class:MyAI
+CHESS_COVER	src/MyAI.h	12;"	d
+CHESS_EMPTY	src/MyAI.h	13;"	d
+COMMANDS	src/main.cpp	/^enum COMMANDS{$/;"	g	file:
+COMMANDS	src/main_clear.cpp	/^enum COMMANDS{$/;"	g	file:
+COMMAND_NUM	src/MyAI.h	14;"	d
+Color	src/MyAI.h	/^	int Color;$/;"	m	class:MyAI
+ConvertChessNo	src/MyAI.cpp	/^int MyAI::ConvertChessNo(int input) {$/;"	f	class:MyAI
+CoverChess	src/MyAI.h	/^	int CoverChess[14];$/;"	m	class:MyAI
+DEPTH_LIMIT	src/MyAI.cpp	4;"	d	file:
+Evaluate	src/MyAI.cpp	/^double MyAI::Evaluate(const int *board) {$/;"	f	class:MyAI
+Expand	src/MyAI.cpp	/^int MyAI::Expand(const int *board, const int color, int *Result) {$/;"	f	class:MyAI
+FLIP	src/main.cpp	/^  FLIP, \/\/ 11$/;"	e	enum:COMMANDS	file:
+FLIP	src/main_clear.cpp	/^  FLIP, \/\/ 11$/;"	e	enum:COMMANDS	file:
+GAME_OVER	src/main.cpp	/^  GAME_OVER, \/\/ 13$/;"	e	enum:COMMANDS	file:
+GAME_OVER	src/main_clear.cpp	/^  GAME_OVER, \/\/ 13$/;"	e	enum:COMMANDS	file:
+GENMOVE	src/main.cpp	/^  GENMOVE, \/\/ 12$/;"	e	enum:COMMANDS	file:
+GENMOVE	src/main_clear.cpp	/^  GENMOVE, \/\/ 12$/;"	e	enum:COMMANDS	file:
+GetFin	src/MyAI.cpp	/^int MyAI::GetFin(char c) {$/;"	f	class:MyAI
+Hash_table	src/hash.cpp	/^Hash_table::Hash_table() {$/;"	f	class:Hash_table
+Hash_table	src/hash.h	/^class Hash_table {$/;"	c
+Hash_table_entry	src/hash.cpp	/^Hash_table_entry::Hash_table_entry() {$/;"	f	class:Hash_table_entry
+Hash_table_entry	src/hash.h	/^class Hash_table_entry {$/;"	c
+KNOWN_COMMAND	src/main.cpp	/^  KNOWN_COMMAND, \/\/ 3$/;"	e	enum:COMMANDS	file:
+KNOWN_COMMAND	src/main_clear.cpp	/^  KNOWN_COMMAND, \/\/ 3$/;"	e	enum:COMMANDS	file:
+LIST_COMMANDS	src/main.cpp	/^  LIST_COMMANDS, \/\/ 4$/;"	e	enum:COMMANDS	file:
+LIST_COMMANDS	src/main_clear.cpp	/^  LIST_COMMANDS, \/\/ 4$/;"	e	enum:COMMANDS	file:
+MOVE	src/main.cpp	/^  MOVE, \/\/ 10$/;"	e	enum:COMMANDS	file:
+MOVE	src/main_clear.cpp	/^  MOVE, \/\/ 10$/;"	e	enum:COMMANDS	file:
+MYAI_INCLUDED	src/MyAI.h	2;"	d
+MakeMove	src/MyAI.cpp	/^void MyAI::MakeMove(int *board, int *red_chess_num, int *black_chess_num,$/;"	f	class:MyAI
+MyAI	src/MyAI.cpp	/^MyAI::MyAI(void) {}$/;"	f	class:MyAI
+MyAI	src/MyAI.h	/^class MyAI  $/;"	c
+NAME	src/main.cpp	/^  NAME, \/\/ 1$/;"	e	enum:COMMANDS	file:
+NAME	src/main_clear.cpp	/^  NAME, \/\/ 1$/;"	e	enum:COMMANDS	file:
+NUM_MOVES_TO_DRAW	src/main.cpp	/^  NUM_MOVES_TO_DRAW, \/\/ 9$/;"	e	enum:COMMANDS	file:
+NUM_MOVES_TO_DRAW	src/main_clear.cpp	/^  NUM_MOVES_TO_DRAW, \/\/ 9$/;"	e	enum:COMMANDS	file:
+NUM_REPETITION	src/main.cpp	/^  NUM_REPETITION, \/\/ 8$/;"	e	enum:COMMANDS	file:
+NUM_REPETITION	src/main_clear.cpp	/^  NUM_REPETITION, \/\/ 8$/;"	e	enum:COMMANDS	file:
+Nega_Scout	src/MyAI.cpp	/^double MyAI::Nega_Scout(const int *board, int *move, const int red_chess_num,$/;"	f	class:MyAI
+Nega_max	src/MyAI.cpp	/^double MyAI::Nega_max(const int *board, int *move, const int red_chess_num,$/;"	f	class:MyAI
+PROTOCOL_VERSION	src/main.cpp	/^  PROTOCOL_VERSION = 0, \/\/ 0$/;"	e	enum:COMMANDS	file:
+PROTOCOL_VERSION	src/main_clear.cpp	/^  PROTOCOL_VERSION = 0, \/\/ 0$/;"	e	enum:COMMANDS	file:
+Pirnf_Chess	src/MyAI.cpp	/^void MyAI::Pirnf_Chess(int chess_no, char *Result) {$/;"	f	class:MyAI
+Pirnf_Chessboard	src/MyAI.cpp	/^void MyAI::Pirnf_Chessboard() {$/;"	f	class:MyAI
+QUIT	src/main.cpp	/^  QUIT, \/\/ 5$/;"	e	enum:COMMANDS	file:
+QUIT	src/main_clear.cpp	/^  QUIT, \/\/ 5$/;"	e	enum:COMMANDS	file:
+READY	src/main.cpp	/^  READY, \/\/ 14$/;"	e	enum:COMMANDS	file:
+READY	src/main_clear.cpp	/^  READY, \/\/ 14$/;"	e	enum:COMMANDS	file:
+RED	src/MyAI.h	10;"	d
+RESET_BOARD	src/main.cpp	/^  RESET_BOARD, \/\/ 7$/;"	e	enum:COMMANDS	file:
+RESET_BOARD	src/main_clear.cpp	/^  RESET_BOARD, \/\/ 7$/;"	e	enum:COMMANDS	file:
+Red_Chess_Num	src/MyAI.h	/^	int Red_Chess_Num, Black_Chess_Num;$/;"	m	class:MyAI
+Red_Time	src/MyAI.h	/^	int Red_Time, Black_Time;$/;"	m	class:MyAI
+Referee	src/MyAI.cpp	/^bool MyAI::Referee(const int *chess, const int from_location_no,$/;"	f	class:MyAI
+SHOWBOARD	src/main.cpp	/^  SHOWBOARD \/\/ 17$/;"	e	enum:COMMANDS	file:
+SHOWBOARD	src/main_clear.cpp	/^  SHOWBOARD \/\/ 17$/;"	e	enum:COMMANDS	file:
+TIME_LEFT	src/main.cpp	/^  TIME_LEFT, \/\/ 16$/;"	e	enum:COMMANDS	file:
+TIME_LEFT	src/main_clear.cpp	/^  TIME_LEFT, \/\/ 16$/;"	e	enum:COMMANDS	file:
+TIME_SETTINGS	src/main.cpp	/^  TIME_SETTINGS, \/\/ 15$/;"	e	enum:COMMANDS	file:
+TIME_SETTINGS	src/main_clear.cpp	/^  TIME_SETTINGS, \/\/ 15$/;"	e	enum:COMMANDS	file:
+VERSION	src/main.cpp	/^  VERSION, \/\/ 2$/;"	e	enum:COMMANDS	file:
+VERSION	src/main_clear.cpp	/^  VERSION, \/\/ 2$/;"	e	enum:COMMANDS	file:
+Zobrist_Hash	src/hash.cpp	/^Zobrist_Hash::Zobrist_Hash() {$/;"	f	class:Zobrist_Hash
+Zobrist_Hash	src/hash.h	/^class Zobrist_Hash {$/;"	c
+__HASH__	src/hash.h	2;"	d
+best_value	src/hash.h	/^    double best_value;  \/\/ store the best value of the move$/;"	m	class:Hash_table_entry
+board	src/hash.h	/^    int board[32]; \/\/ store the board status$/;"	m	class:Hash_table_entry
+board	src/hash.h	/^    int board[32];$/;"	m	class:Zobrist_Hash
+boardsize	src/MyAI.cpp	/^bool MyAI::boardsize(const char *data[], char *response) {$/;"	f	class:MyAI
+commands_name	src/MyAI.h	/^	const char* commands_name[COMMAND_NUM] = {$/;"	m	class:MyAI
+depth	src/hash.h	/^    int depth; \/\/ the searching depth$/;"	m	class:Hash_table_entry
+do_move	src/hash.cpp	/^int Zobrist_Hash::do_move() {$/;"	f	class:Zobrist_Hash
+flip	src/MyAI.cpp	/^bool MyAI::flip(const char *data[], char *response) {$/;"	f	class:MyAI
+functions	src/main.cpp	/^static bool (MyAI::*functions[])(const char* [], char*) = {$/;"	v	file:
+game_over	src/MyAI.cpp	/^bool MyAI::game_over(const char *data[], char *response) {$/;"	f	class:MyAI
+generateMove	src/MyAI.cpp	/^void MyAI::generateMove(char move[6]) {$/;"	f	class:MyAI
+genmove	src/MyAI.cpp	/^bool MyAI::genmove(const char *data[], char *response) {$/;"	f	class:MyAI
+hash	src/hash.cpp	/^int hash() {$/;"	f
+initBoardState	src/MyAI.cpp	/^void MyAI::initBoardState() {$/;"	f	class:MyAI
+known_command	src/MyAI.cpp	/^bool MyAI::known_command(const char *data[], char *response) {$/;"	f	class:MyAI
+list_commands	src/MyAI.cpp	/^bool MyAI::list_commands(const char *data[], char *response) {$/;"	f	class:MyAI
+main	src/main.cpp	/^int main(){$/;"	f
+main	src/main_clear.cpp	/^int main(){$/;"	f
+max	src/MyAI.cpp	/^double max(const double n1, const double n2) { return n1 > n2 ? n1 : n2; }$/;"	f
+move	src/MyAI.cpp	/^bool MyAI::move(const char *data[], char *response) {$/;"	f	class:MyAI
+move	src/hash.h	/^    char move; \/\/ the best move$/;"	m	class:Hash_table_entry
+name	src/MyAI.cpp	/^bool MyAI::name(const char *data[], char *response) {$/;"	f	class:MyAI
+node	src/MyAI.h	/^	int node;$/;"	m	class:MyAI
+num_moves_to_draw	src/MyAI.cpp	/^bool MyAI::num_moves_to_draw(const char *data[], char *response) { return 0; }$/;"	f	class:MyAI
+num_repetition	src/MyAI.cpp	/^bool MyAI::num_repetition(const char *data[], char *response) { return 0; }$/;"	f	class:MyAI
+protocol_version	src/MyAI.cpp	/^bool MyAI::protocol_version(const char *data[], char *response) {$/;"	f	class:MyAI
+quit	src/MyAI.cpp	/^bool MyAI::quit(const char *data[], char *response) {$/;"	f	class:MyAI
+random_number	src/hash.h	/^    int random_number[32];$/;"	m	class:Zobrist_Hash
+ready	src/MyAI.cpp	/^bool MyAI::ready(const char *data[], char *response) { return 0; }$/;"	f	class:MyAI
+reset_board	src/MyAI.cpp	/^bool MyAI::reset_board(const char *data[], char *response) {$/;"	f	class:MyAI
+showboard	src/MyAI.cpp	/^bool MyAI::showboard(const char *data[], char *response) {$/;"	f	class:MyAI
+table	src/hash.h	/^    Hash_table_entry* table; $/;"	m	class:Hash_table
+time_left	src/MyAI.cpp	/^bool MyAI::time_left(const char *data[], char *response) {$/;"	f	class:MyAI
+time_settings	src/MyAI.cpp	/^bool MyAI::time_settings(const char *data[], char *response) { return 0; }$/;"	f	class:MyAI
+version	src/MyAI.cpp	/^bool MyAI::version(const char *data[], char *response) {$/;"	f	class:MyAI
+~Hash_table	src/hash.cpp	/^Hash_table::~Hash_table() {$/;"	f	class:Hash_table
+~MyAI	src/MyAI.cpp	/^MyAI::~MyAI(void) {}$/;"	f	class:MyAI
